@@ -157,6 +157,7 @@ function updatedata(i){
     count.style.display = 'none';
     submit.innerHTML = 'update';
     mood = 'update';
+    total.style.background = '#a00d02';
     scroll({
         top:0,
         behavior:'smooth',
@@ -185,7 +186,7 @@ function getsearchmood(id){
 }
 
 function searchdata(value){
-    let table;
+    let table = ''; // تم تصحيح تعريف المتغير هنا لمنع ظهور كلمة undefined
     for(let i = 0; i< datapro.length;i++){
         if (searchmood == 'title'){
             if(datapro[i].title.includes(value.toLowerCase())){
@@ -226,12 +227,45 @@ function searchdata(value){
         }
     }
     
-    
     document.getElementById('tbody').innerHTML = table
 }
 
-
 show_data()
-// clean data
 
+// 1. دالة طباعة البيانات والجدول
+function printProducts() {
+    window.print();
+}
 
+// 2. دالة التصدير إلى إكسل باستخدام تقنية Blob الآمنة والمحدثة
+function exportToExcel() {
+    if (!datapro || datapro.length === 0) {
+        alert("لم يتم العثور على منتجات لتصديرها، تأكد من إضافة منتجات أولاً!");
+        return;
+    }
+
+    // كتابة عناوين الأعمدة مع ترميز الـ BOM لضمان قراءة اللغة العربية والرموز بشكل صحيح
+    let csvContent = "\uFEFFID;TITLE;PRICE;TAXES;ADS;DISCOUNT;TOTAL;CATEGORY\n";
+    
+    datapro.forEach((prodact, index) => {
+        // سحب التوتال وتنظيفه تماماً من أي وسوم HTML محتملة
+        let cleanTotal = String(prodact.total).replace(/<[^>]*>/g, "").trim();
+        
+        let row = `${index + 1};${prodact.title};${prodact.price};${prodact.taxes};${prodact.ads};${prodact.discount};${cleanTotal};${prodact.category}`;
+        csvContent += row + "\n";
+    });
+
+    // إنشاء ملف Blob آمن وتمريره مباشرة للمتصفح لمنع تحميل ملف فارغ
+    let blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    let link = document.createElement("a");
+    
+    if (navigator.msSaveBlob) { 
+        navigator.msSaveBlob(blob, "products_report.csv");
+    } else {
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", "products_report.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}

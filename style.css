@@ -73,6 +73,22 @@ table th{
 th,td{
     padding: 5px;
 }
-#deleteAll{
-    margin: 20px 0px;
+#deleteAll , #printBtn, #exportBtn{
+    margin: 10px 0px;
+}
+
+/* الأكواد التي تطبق فقط عند الضغط على زر الطباعة */
+@media print {
+    input, button, .crud h1, .crud h2 {
+        display: none !important; /* إخفاء حقول الإدخال وكل الأزرار */
+    }
+    body {
+        background-color: white !important; /* تحويل الخلفية للأبيض للطباعة الورقية */
+        color: black !important;
+    }
+    table {
+        width: 100%;
+        color: black !important;
+        background-color: white !important;
+    }
 }

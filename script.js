@@ -55,7 +55,7 @@ submit.onclick = function(){
     }
 
     if(mood=='create' ){
-        if(title.value != '' && price.value != '' && category.value != ''){
+        if(title.value != '' && price.value != '' && category.value != '' && review.value != ''){
             if(newpro.count > 1 && count.value < 501){
                 for(i = 0;i< newpro.count;i++){
                     datapro.push(newpro);

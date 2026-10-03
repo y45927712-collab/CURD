@@ -9,17 +9,16 @@ let category = document.getElementById('category');
 let submit = document.getElementById('submit');
 let hiMas = document.getElementById('hiMas')
 let user = prompt('hi what is your name?');
+let review = document.getElementById('review');
 
 if(user != null || user != ''){
-    alert('hi ' + user)
-    hiMas.innerHTML = "what's new " + user
+    alert('hi ' + user);
+    hiMas.innerHTML = "what's new " + user;
 }
-
 
 let mood = 'create';
 let tmp;
 // get total
-
 
 function get_total(){
     if(price.value != ''){
@@ -32,18 +31,15 @@ function get_total(){
     }
 }
 
-
 // create prodact
 let datapro;
 
 if(localStorage.prodact != null){
-    datapro = JSON.parse(localStorage.prodact)
-    show_data()
-
+    datapro = JSON.parse(localStorage.prodact);
+    show_data();
 }else{
     datapro = [];
 }
-
 
 submit.onclick = function(){
     let newpro = {
@@ -54,11 +50,10 @@ submit.onclick = function(){
         discount:discount.value,
         total:total.innerHTML,
         count:count.value,
-        category:category.value.toLowerCase()
+        category:category.value.toLowerCase(),
+        review:review.value // حفظ التعليق هنا
     }
-    
-    
-    //  && newpro.count < 501
+
     if(mood=='create' ){
         if(title.value != '' && price.value != '' && category.value != ''){
             if(newpro.count > 1 && count.value < 501){
@@ -83,10 +78,6 @@ submit.onclick = function(){
     show_data();
 }
 
-
-// save localstorage
-
-
 // clear inputs
 function clear_data(){
     title.value = '';
@@ -97,8 +88,9 @@ function clear_data(){
     count.value = '';
     ads.value = '';
     total.innerHTML = '';
-
+    review.value = '';
 }
+
 // read
 function show_data(){
     let table = '';
@@ -113,10 +105,10 @@ function show_data(){
             <td>${datapro[i].discount}</td>
             <td>${datapro[i].total}</td>
             <td>${datapro[i].category}</td>
-            <td><button onclick = "updatedata(${i})" id="update">update</button></td>
+            <td>${datapro[i].review || ''}</td>
+            <td><button onclick="updatedata(${i})" id="update">update</button></td>
             <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
         </tr>`;
-
     }
     let btn_del_all = document.getElementById('deleteAll');
     document.getElementById('tbody').innerHTML = table
@@ -129,7 +121,6 @@ function show_data(){
     }
 }
 
-
 // delete
 function delete_data(i) {
     datapro.splice(i,1);
@@ -141,11 +132,11 @@ function delete_all_data(){
     datapro.splice(0)
     localStorage.clear()
     show_data()
-
 }
-// coun
-// updat
+
+// update
 function updatedata(i){
+    review.value = datapro[i].review || '';
     tmp = i
     title.value = datapro[i].title;
     price.value = datapro[i].price;
@@ -165,17 +156,13 @@ function updatedata(i){
     get_total();
 }
 
-
 // search
 let searchmood = 'title';
 
 function getsearchmood(id){
-
     let search = document.getElementById('search')
-    
     if(id == 'searchTitle'){
         searchmood = 'title';
-        
     }else{
         searchmood = 'category';
     }
@@ -186,47 +173,44 @@ function getsearchmood(id){
 }
 
 function searchdata(value){
-    let table = ''; // تم تصحيح تعريف المتغير هنا لمنع ظهور كلمة undefined
+    let table = ''; 
     for(let i = 0; i< datapro.length;i++){
         if (searchmood == 'title'){
             if(datapro[i].title.includes(value.toLowerCase())){
-                            
-                            table += `
-                        <tr>
-                            <td>${i+1}</td>
-                            <td>${datapro[i].title}</td>
-                            <td>${datapro[i].price}</td>
-                            <td>${datapro[i].taxes}</td>
-                            <td>${datapro[i].ads}</td>
-                            <td>${datapro[i].discount}</td>
-                            <td>${datapro[i].total}</td>
-                            <td>${datapro[i].category}</td>
-                            <td><button onclick = "updatedata(${i})" id="update">update</button></td>
-                            <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
-                        </tr>`;
-                        
+                table += `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${datapro[i].title}</td>
+                    <td>${datapro[i].price}</td>
+                    <td>${datapro[i].taxes}</td>
+                    <td>${datapro[i].ads}</td>
+                    <td>${datapro[i].discount}</td>
+                    <td>${datapro[i].total}</td>
+                    <td>${datapro[i].category}</td>
+                    <td>${datapro[i].review || ''}</td>
+                    <td><button onclick="updatedata(${i})" id="update">update</button></td>
+                    <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
+                </tr>`;
             }
         }else{
             if(datapro[i].category.includes(value.toLowerCase())){
-                            
-                            table += `
-                        <tr>
-                            <td>${i+1}</td>
-                            <td>${datapro[i].title}</td>
-                            <td>${datapro[i].price}</td>
-                            <td>${datapro[i].taxes}</td>
-                            <td>${datapro[i].ads}</td>
-                            <td>${datapro[i].discount}</td>
-                            <td>${datapro[i].total}</td>
-                            <td>${datapro[i].category}</td>
-                            <td><button onclick = "updatedata(${i})" id="update">update</button></td>
-                            <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
-                        </tr>`;
-                        
+                table += `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${datapro[i].title}</td>
+                    <td>${datapro[i].price}</td>
+                    <td>${datapro[i].taxes}</td>
+                    <td>${datapro[i].ads}</td>
+                    <td>${datapro[i].discount}</td>
+                    <td>${datapro[i].total}</td>
+                    <td>${datapro[i].category}</td>
+                    <td>${datapro[i].review || ''}</td>
+                    <td><button onclick="updatedata(${i})" id="update">update</button></td>
+                    <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
+                </tr>`;
             }
         }
     }
-    
     document.getElementById('tbody').innerHTML = table
 }
 
@@ -239,33 +223,25 @@ function printProducts() {
 
 // 2. دالة التصدير إلى إكسل باستخدام تقنية Blob الآمنة والمحدثة
 function exportToExcel() {
-    if (!datapro || datapro.length === 0) {
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFFID;TITLE;PRICE;TAXES;ADS;DISCOUNT;TOTAL;CATEGORY;REVIEW\n";
+
+    if (datapro.length === 0) {
         alert("لم يتم العثور على منتجات لتصديرها، تأكد من إضافة منتجات أولاً!");
         return;
     }
 
-    // كتابة عناوين الأعمدة مع ترميز الـ BOM لضمان قراءة اللغة العربية والرموز بشكل صحيح
-    let csvContent = "\uFEFFID;TITLE;PRICE;TAXES;ADS;DISCOUNT;TOTAL;CATEGORY\n";
-    
-    datapro.forEach((prodact, index) => {
-        // سحب التوتال وتنظيفه تماماً من أي وسوم HTML محتملة
-        let cleanTotal = String(prodact.total).replace(/<[^>]*>/g, "").trim();
-        
-        let row = `${index + 1};${prodact.title};${prodact.price};${prodact.taxes};${prodact.ads};${prodact.discount};${cleanTotal};${prodact.category}`;
+    for (let i = 0; i < datapro.length; i++) {
+        let cleanTotal = String(datapro[i].total).replace(/<[^>]*>/g, "").trim();
+        let row = `${i + 1};${datapro[i].title};${datapro[i].price};${datapro[i].taxes};${datapro[i].ads};${datapro[i].discount};${cleanTotal};${datapro[i].category};${datapro[i].review || ''}`;
         csvContent += row + "\n";
-    });
-
-    // إنشاء ملف Blob آمن وتمريره مباشرة للمتصفح لمنع تحميل ملف فارغ
-    let blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    let link = document.createElement("a");
-    
-    if (navigator.msSaveBlob) { 
-        navigator.msSaveBlob(blob, "products_report.csv");
-    } else {
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute("download", "products_report.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
     }
+
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "products_report.csv");
+    document.body.appendChild(link);
+
+    link.click();
+    document.body.removeChild(link);
 }

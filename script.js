@@ -18,8 +18,8 @@ if(user != null || user != ''){
 
 let mood = 'create';
 let tmp;
-// get total
 
+// get total
 function get_total(){
     if(price.value != ''){
         let result = (+price.value + +taxes.value + +ads.value) - +discount.value;
@@ -51,11 +51,12 @@ submit.onclick = function(){
         total:total.innerHTML,
         count:count.value,
         category:category.value.toLowerCase(),
-        review:review.value // حفظ التعليق هنا
+        review:review.value || 'no review' // إذا تركها فارغة يكتب تلقائياً no review
     }
 
     if(mood=='create' ){
-        if(title.value != '' && price.value != '' && category.value != '' && review.value != ''){
+        // جعلنا الشروط الأساسية على الاسم والسعر والفئة فقط لكي يظل الموقع مرناً
+        if(title.value != '' && price.value != '' && category.value != ''){
             if(newpro.count > 1 && count.value < 501){
                 for(i = 0;i< newpro.count;i++){
                     datapro.push(newpro);
@@ -105,7 +106,7 @@ function show_data(){
             <td>${datapro[i].discount}</td>
             <td>${datapro[i].total}</td>
             <td>${datapro[i].category}</td>
-            <td>${datapro[i].review || ''}</td>
+            <td>${datapro[i].review || 'no review'}</td>
             <td><button onclick="updatedata(${i})" id="update">update</button></td>
             <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
         </tr>`;
@@ -187,7 +188,7 @@ function searchdata(value){
                     <td>${datapro[i].discount}</td>
                     <td>${datapro[i].total}</td>
                     <td>${datapro[i].category}</td>
-                    <td>${datapro[i].review || ''}</td>
+                    <td>${datapro[i].review || 'no review'}</td>
                     <td><button onclick="updatedata(${i})" id="update">update</button></td>
                     <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
                 </tr>`;
@@ -204,7 +205,7 @@ function searchdata(value){
                     <td>${datapro[i].discount}</td>
                     <td>${datapro[i].total}</td>
                     <td>${datapro[i].category}</td>
-                    <td>${datapro[i].review || ''}</td>
+                    <td>${datapro[i].review || 'no review'}</td>
                     <td><button onclick="updatedata(${i})" id="update">update</button></td>
                     <td><button onclick="delete_data(${i})" id="delete">delete</button></td>
                 </tr>`;
@@ -216,12 +217,10 @@ function searchdata(value){
 
 show_data()
 
-// 1. دالة طباعة البيانات والجدول
 function printProducts() {
     window.print();
 }
 
-// 2. دالة التصدير إلى إكسل باستخدام تقنية Blob الآمنة والمحدثة
 function exportToExcel() {
     let csvContent = "data:text/csv;charset=utf-8,\uFEFFID;TITLE;PRICE;TAXES;ADS;DISCOUNT;TOTAL;CATEGORY;REVIEW\n";
 
@@ -232,7 +231,7 @@ function exportToExcel() {
 
     for (let i = 0; i < datapro.length; i++) {
         let cleanTotal = String(datapro[i].total).replace(/<[^>]*>/g, "").trim();
-        let row = `${i + 1};${datapro[i].title};${datapro[i].price};${datapro[i].taxes};${datapro[i].ads};${datapro[i].discount};${cleanTotal};${datapro[i].category};${datapro[i].review || ''}`;
+        let row = `${i + 1};${datapro[i].title};${datapro[i].price};${datapro[i].taxes};${datapro[i].ads};${datapro[i].discount};${cleanTotal};${datapro[i].category};${datapro[i].review || 'no review'}`;
         csvContent += row + "\n";
     }
 
@@ -241,7 +240,6 @@ function exportToExcel() {
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "products_report.csv");
     document.body.appendChild(link);
-
     link.click();
     document.body.removeChild(link);
 }
